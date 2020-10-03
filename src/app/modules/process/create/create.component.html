@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h4 class="modal-title">Prozess hinzufügen</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label>
+      Name:
+      <input type="text" formControlName="name">
+    </label>
+
+    <label>
+      Script:
+      <input type="text" formControlName="script">
+    </label>
+
+    <button type="submit" [disabled]="!form.valid">Create</button>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close()">Close</button>
+</div>

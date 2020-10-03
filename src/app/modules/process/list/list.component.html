@@ -1,0 +1,108 @@
+<div class="card">
+  <div class="card-header">
+    <button class="btn btn-sm btn-success ml-2" (click)="create()">
+      Hinzufügen
+    </button>
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Interpreter</th>
+          <th scope="col">Name</th>
+          <th scope="col">Version</th>
+          <th scope="col" width="100px">CPU</th>
+          <th scope="col">Memory</th>
+          <th scope="col">Status</th>
+          <th scope="col">Autorestart</th>
+          <th scope="col">Logs</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="getMainProcess() !== null" class="table-success">
+          <th scope="row">{{getMainProcess().pm_id}}</th>
+          <td>{{getMainProcess().pm2_env.exec_interpreter}}</td>
+          <td>{{getMainProcess().name}}</td>
+          <td>{{getMainProcess().pm2_env.version}}</td>
+          <td>{{getMainProcess().monit.cpu}} %</td>
+          <td>{{(getMainProcess().monit.memory / 1000000).toFixed(2)}} mb</td>
+          <td>{{getMainProcess().pm2_env.status}}</td>
+          <td>{{getMainProcess().pm2_env.autorestart}}</td>
+          <td>
+            <button class="btn btn-sm btn-primary ml-2" (click)="logs(getMainProcess().name)">
+              <svg class="bi bi-file-text" width="1em" height="1em" fill="currentColor">
+                <use xlink:href="assets/bootstrap-icons.svg#file-text" />
+              </svg>
+            </button>
+            <button class="btn btn-sm btn-primary" (click)="flush(getMainProcess().name)">
+              <svg class="bi bi-trash" width="1em" height="1em" fill="currentColor">
+                <use xlink:href="assets/bootstrap-icons.svg#trash" />
+              </svg>
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="restart(getMainProcess().name)">
+              <svg class="bi bi-arrow-clockwise" width="1em" height="1em" fill="currentColor"
+                *ngIf="!checkLoading('restart', getMainProcess().name)">
+                <use xlink:href="assets/bootstrap-icons.svg#arrow-clockwise" />
+              </svg>
+              <svg class="bi bi-hourglass" width="1em" height="1em" fill="currentColor"
+                *ngIf="checkLoading('restart', getMainProcess().name)">
+                <use xlink:href="assets/bootstrap-icons.svg#hourglass" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngFor="let process of getProcesses() trackBy: trackProcess"
+          [ngClass]="{'table-success': process.pm2_env.status === 'online'}">
+          <th scope="row">{{process.pm_id}}</th>
+          <td>{{process.pm2_env.exec_interpreter}}</td>
+          <td>{{process.name}}</td>
+          <td>{{process.pm2_env.version}}</td>
+          <td>{{process.monit.cpu}} %</td>
+          <td>{{(process.monit.memory / 1000000).toFixed(2)}} mb</td>
+          <td>{{process.pm2_env.status}}</td>
+          <td>{{process.pm2_env.autorestart}}</td>
+          <td>
+            <button class="btn btn-sm btn-primary ml-2" (click)="logs(process.name)">
+              <svg class="bi bi-file-text" width="1em" height="1em" fill="currentColor">
+                <use xlink:href="assets/bootstrap-icons.svg#file-text" />
+              </svg>
+            </button>
+            <button class="btn btn-sm btn-primary" (click)="flush(process.name)">
+              <svg class="bi bi-trash" width="1em" height="1em" fill="currentColor">
+                <use xlink:href="assets/bootstrap-icons.svg#trash" />
+              </svg>
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-danger" *ngIf="process.pm2_env.status === 'online'"
+              (click)="stop(process.name)">
+              <svg class="bi bi-stop-fill" width="1em" height="1em" fill="currentColor"
+                *ngIf="!checkLoading('stop', process.name)">
+                <use xlink:href="assets/bootstrap-icons.svg#stop-fill" />
+              </svg>
+              <svg class="bi bi-hourglass" width="1em" height="1em" fill="currentColor"
+                *ngIf="checkLoading('stop', process.name)">
+                <use xlink:href="assets/bootstrap-icons.svg#hourglass" />
+              </svg>
+            </button>
+            <button class="btn btn-sm btn-primary" (click)="restart(process.name)">
+              <svg class="bi bi-arrow-clockwise" width="1em" height="1em" fill="currentColor"
+                *ngIf="!checkLoading('restart', process.name)">
+                <use xlink:href="assets/bootstrap-icons.svg#arrow-clockwise" />
+              </svg>
+              <svg class="bi bi-hourglass" width="1em" height="1em" fill="currentColor"
+                *ngIf="checkLoading('restart', process.name)">
+                <use xlink:href="assets/bootstrap-icons.svg#hourglass" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
